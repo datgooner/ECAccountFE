@@ -5,7 +5,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import LayersIcon from "@material-ui/icons/Layers";
 import { useHistory, useRouteMatch } from "react-router";
 
 const MainListItems = (props) => {
@@ -16,8 +15,8 @@ const MainListItems = (props) => {
       <ListItem
         button
         onClick={() => {
-          history.push(`${match.url}`);
           props.handleLabel("Home");
+          history.push(`${match.url}`);
         }}
       >
         <ListItemIcon>
@@ -39,25 +38,31 @@ const MainListItems = (props) => {
         <ListItemText primary="Account" />
       </ListItem>
 
-
-
-      <ListItem button onClick={() => {
+      <ListItem
+        button
+        onClick={() => {
           props.handleLabel("Report");
           history.push(`${match.url}/chart`);
-        }}>
+        }}
+      >
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="Reports" />
       </ListItem>
 
-      <ListItem button>
+      {/* <ListItem
+        button
+        onClick={() => {
+          props.handleLabel("Test");
+          history.push(`${match.url}/test`);
+        }}
+      >
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>
         <ListItemText primary="Integrations" />
-      </ListItem>
-
+      </ListItem> */}
     </List>
   );
 };

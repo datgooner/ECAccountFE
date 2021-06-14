@@ -18,6 +18,7 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import AccManagement from "../AccManagement";
 import { signOut } from "../Auth/AuthSlice";
 import Chart from "../Chart";
+import Test from "../Test";
 import MainListItems from "./components/MainListItems";
 const drawerWidth = 240;
 
@@ -82,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+
     height: "100vh",
     overflow: "auto",
   },
@@ -181,10 +183,19 @@ function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Switch>
             <Route exact path={`${match.url}`}>
-              {<div>Main Page</div>}
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                className={classes.title}
+              >
+                Wellcome
+              </Typography>
             </Route>
             <Route path={`${match.url}/account`} component={AccManagement} />
             <Route path={`${match.url}/chart`} component={Chart} />
+            <Route path={`${match.url}/test`} component={Test} />
           </Switch>
         </Container>
       </main>

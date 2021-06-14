@@ -1,10 +1,17 @@
-import { createMuiTheme, makeStyles } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  createMuiTheme,
+  makeStyles,
+  Modal,
+} from "@material-ui/core";
 import { DataGrid, GridOverlay } from "@material-ui/data-grid";
+import { unwrapResult } from "@reduxjs/toolkit";
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import NotFound from "../../components/NotFound";
-import { getAccountList } from "./accountSlice";
+import { deleteAccountByID, getAccountList } from "./accountSlice";
 import CustomToolbar from "./components/CustomToolbar";
+import EditForm from "./components/EditForm";
 const defaultTheme = createMuiTheme();
 const useStyles = makeStyles(
   (theme) => ({
@@ -81,16 +88,65 @@ function CustomNoRowsOverlay() {
     </GridOverlay>
   );
 }
-const handleEditCellChangeCommitted = (e) => {
-  console.log(e);
-};
+
 function AccManagement() {
   const dataRaw = useSelector((state) => state.account.data);
 
   const dispatch = useDispatch();
+  const [idToEdit, setIdToEdit] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const handleSubmit = (e) => {
+    dispatch(getAccountList());
+    setOpen(e);
+  };
+  const renderDetailsButton = (params) => {
+    return (
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          style={{ marginLeft: 5 }}
+          onClick={() => {
+            setIdToEdit(params.row.id);
+            setOpen(true);
+          }}
+        >
+          Edit
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          style={{ marginLeft: 10 }}
+          onClick={() => {
+            if (window.confirm("Are you sure to delete this item?"))
+              try {
+                const result = dispatch(deleteAccountByID(params.row.id));
+                dispatch(getAccountList());
+                const res = unwrapResult(result);
+              } catch (e) {
+                console.log(e);
+                window.alert("Some error occurred!");
+              }
+          }}
+        >
+          Delete
+        </Button>
+      </div>
+    );
+  };
   const data = useMemo(() => {
     if (dataRaw) {
       let temp = [
+        {
+          field: "",
+          headerName: "Button",
+          sortable: false,
+          width: 200,
+          disableClickEventBubbling: true,
+          renderCell: renderDetailsButton,
+        },
         {
           field: "id",
           headerName: "ID",
@@ -163,6 +219,10 @@ function AccManagement() {
       };
     }
   }, [dataRaw]);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   useEffect(() => {
     dispatch(getAccountList());
   }, [dispatch]);
@@ -172,7 +232,6 @@ function AccManagement() {
         <DataGrid
           {...data}
           onError={() => console.log("some error")}
-          onEditCellChangeCommitted={handleEditCellChangeCommitted}
           aria-label="Account List"
           components={{
             NoRowsOverlay: CustomNoRowsOverlay,
@@ -189,9 +248,17 @@ function AccManagement() {
             ],
           }}
         />
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <EditForm idToEdit={idToEdit} handleSubmit={handleSubmit} />
+        </Modal>
       </div>
     );
-  else return <NotFound></NotFound>;
+  else return <CircularProgress />;
 }
 
 export default AccManagement;

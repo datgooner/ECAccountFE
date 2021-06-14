@@ -35,6 +35,7 @@ function App() {
             redirect="/login"
             component={Dashboard}
           />
+
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter>

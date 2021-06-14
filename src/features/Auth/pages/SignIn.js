@@ -40,13 +40,12 @@ function SignIn() {
   const dispatch = useDispatch();
   const history = useHistory();
   const isLoading = useSelector((state) => state.auth.isLoading);
-  const loginTime = useSelector((state) => state.auth.loginTime);
 
   const onSubmitHandle = async (data) => {
     try {
       const result = await dispatch(signIn(data));
       const res = unwrapResult(result);
-      console.log(loginTime);
+
       localStorage.setItem("token", res.access_token);
       history.push("/home");
     } catch (error) {
@@ -66,7 +65,7 @@ function SignIn() {
         <form
           onSubmit={handleSubmit(onSubmitHandle)}
           className={classes.form}
-          noValidate
+          // noValidate
         >
           <TextField
             variant="outlined"
